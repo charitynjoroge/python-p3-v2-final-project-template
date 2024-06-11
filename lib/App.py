@@ -21,7 +21,8 @@ def main():
         print("1. Add Citizen")
         print("2. Update Citizen")
         print("3. Delete Citizen")
-        print("4. Exit")
+        print("4. Find Citizen by ID")
+        print("5. Exit")
 
         choice = input("Enter your choice (1-4): ")
 
@@ -35,10 +36,10 @@ def main():
                 # Create county (if not already existing)
                 CURSOR.execute('INSERT INTO county (name) VALUES (?) ON CONFLICT DO NOTHING', (county_name,))
                 CONN.commit()
-                county_id = CURSOR.execute('SELECT id FROM county WHERE name = ?', (county_name,)).fetchone()[0]
+                #county_id = CURSOR.execute('SELECT id FROM county WHERE name = ?', (county_name,)).fetchone()[0]
 
                 # Create citizen
-                CURSOR.execute('INSERT INTO citizen (name, email, county_id) VALUES (?, ?, ?)', (citizen_name, citizen_email, county_id))
+                CURSOR.execute('INSERT INTO citizen (name, email, county_name) VALUES (?, ?, ?)', (citizen_name, citizen_email, county_name))
                 CONN.commit()
                 print("Citizen added successfully!")
             except sqlite3.Error as e:
@@ -88,10 +89,28 @@ def main():
                 print("Invalid citizen ID (must be an integer).")
 
         elif choice == '4':
-            break  # Exit the loop
+
+            citizen_id = input("Enter citizen's ID to find: ")
+
+            try:
+                CURSOR.execute('SELECT * FROM citizen WHERE id LIKE ?', (f'%{citizen_id}%',))
+                citizens = CURSOR.fetchall()  # Fetch all matching citizens
+
+                if citizens:
+                    print("\nMatching Citizens:")
+                    for citizen in citizens:
+                        print(Citizen(citizen["id"], citizen["name"], citizen["email"]))
+                else:
+                    print("No citizens found with that id.")
+            except sqlite3.Error as e:
+                print(f"Error finding citizen: {e}")
+
+        elif choice == '5':
+                    break  # Exit the loop
 
         else:
-            print("Invalid choice. Please enter a number between 1 and 4.")
+            print("Invalid choice. Please enter a number between 1 and 5.")
+
 
     # Close the connection (recommended to close it outside the loop)
     CONN.close()
