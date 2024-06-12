@@ -8,14 +8,43 @@ CURSOR = CONN.cursor()
 
 
 class Citizen:
+
+
+    MIN_NAME_LENGTH = 5
+
+
     def __init__(self, id, name, email=None, county=None):
         self.id = id 
         self.name = name
         self.email = email 
         self.county = county
 
+
+    @property  # Getter for email
+    def email(self):
+        return self._email
+
+    @email.setter  # Setter for email
+    def email(self, new_email):
+        if new_email is None or new_email[-len('@gmail.com'):] == '@gmail.com':
+            self._email = new_email
+        else:
+            raise ValueError("Email must be a Gmail address (ending with @gmail.com)")
+
+
+    @property  # Getter for name
+    def name(self):
+        return self._name
+
+    @name.setter  # Setter for name
+    def name(self, new_name):
+        if new_name is None or len(new_name) >= Citizen.MIN_NAME_LENGTH:
+            self._name = new_name
+        else:
+            raise ValueError(f"Name must be at least {Citizen.MIN_NAME_LENGTH} digits long.")
+
    
-    
+    @classmethod
     def add_to_citizen_table(self):
 
         """
@@ -29,26 +58,9 @@ class Citizen:
         CONN.commit()
         CONN.close() 
 
-     
-    def update_citizen_name( citizen_id, new_name):
-        """
-        Updates the name of a citizen in the database.
-
-        """
-
-
-        try:
-            CURSOR.execute('''UPDATE citizen SET name = ? WHERE id = ?''', (new_name, citizen_id))
-            CONN.commit()
-            return True
-        except sqlite3.Error as e:
-            print(f"Error updating citizen: {e}")
-            return False
-        finally:
-            CURSOR.close()
 
     
-    
+    @classmethod
     def delete_citizen(cls, citizen_id):
         """
         Deletes a citizen record from the database.
@@ -61,32 +73,13 @@ class Citizen:
         except sqlite3.Error as e:
             print(f"Error deleting citizen: {e}")
             return False
-        finally:
-            CURSOR.close()
-
-    
-    def find_by_name(cls, name):
-        """
-        Finds citizen records in the database that match the provided name (partial match).
-
-        """
-
-        CURSOR = CONN.cursor()
-        CURSOR.execute('SELECT * FROM citizen WHERE name LIKE ?', (f'%{name}%',))
-        citizens = CURSOR.fetchall()
-        return [cls(*citizen) for citizen in citizens]  
+        
 
 
+    @classmethod
     def find_by_id(cls, citizen_id):
         """
         Finds a citizen record in the database by ID.
-
-        Args:
-            conn (sqlite3.Connection): The database connection object.
-            citizen_id (int): The ID of the citizen to search for.
-
-        Returns:
-            Citizen: The Citizen object matching the ID, or None if not found
 
         """
         CURSOR = CONN.cursor()
@@ -97,24 +90,4 @@ class Citizen:
         else:
             return None  # Return None if not found
         
-    
-def find_by_county_id(county_id):
-    """
-    Finds citizen records in the database that belong to the specified county ID.
-
-    Args:
-        conn (sqlite3.Connection): The database connection object.
-        county_id (int): The ID of the county to search for citizens.
-
-    Returns:
-        list[tuple]: A list of tuples containing citizen data (assuming column order).
-    """
-
-    try:
-        CURSOR.execute('SELECT * FROM citizen WHERE county_id = ?', (county_id,))
-        citizens = CURSOR.fetchall()
-        return citizens
-    except sqlite3.Error as e:
-        print(f"Error finding citizens: {e}")
-        return []  # Return empty list on error
     

@@ -12,7 +12,7 @@ class County:
         self.id = id 
         self.name = name 
 
-    
+    @classmethod
     def add_to_county_table(self):
 
         """
@@ -27,7 +27,7 @@ class County:
         CONN.close() 
 
 
-    
+    @classmethod
     def update_county_name(cls, county_id, new_name):
         """
         Updates the name of a county in the database.
@@ -44,7 +44,7 @@ class County:
         finally:
             CURSOR.close()
 
-    
+    @classmethod
     def delete_by_id(cls, county_id):
         """
         Deletes a county record from the database.
@@ -61,15 +61,4 @@ class County:
         finally:
             CURSOR.close()
 
-    
-    def find_by_name(cls, name):
-        """
-        Finds county records in the database that match the provided name (partial match).
-
-        """
-
-        CURSOR = CONN.cursor()
-        CURSOR.execute('SELECT * FROM county WHERE name LIKE ?', (f'%{name}%',))
-        counties = CURSOR.fetchall()
-        return [cls(*county) for county in counties]  
 
