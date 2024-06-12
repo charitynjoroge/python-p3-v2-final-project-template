@@ -79,7 +79,7 @@ def main():
 
                 if existing_citizen:
                     CURSOR.execute('DELETE FROM citizen WHERE id = ?', (citizen_id,))
-                    CONN.commit()
+                    CONN.commit() 
                     print("Citizen deleted successfully!")
                 else:
                     print(f"Citizen with ID {citizen_id} not found.")
@@ -88,31 +88,34 @@ def main():
             except ValueError:
                 print("Invalid citizen ID (must be an integer).")
 
+        
         elif choice == '4':
-
-            citizen_id = input("Enter citizen's ID to find: ")
+            # Find citizen by ID
+            citizen_id = int(input("Enter citizen's ID to find: "))
 
             try:
-                CURSOR.execute('SELECT * FROM citizen WHERE id LIKE ?', (f'%{citizen_id}%',))
-                citizens = CURSOR.fetchall()  # Fetch all matching citizens
+                # Use Citizen.find_by_id (assuming implemented)
+                existing_citizen = Citizen.find_by_id(citizen_id)
 
-                if citizens:
-                    print("\nMatching Citizens:")
-                    for citizen in citizens:
-                        print(Citizen(citizen["id"], citizen["name"], citizen["email"]))
+                if existing_citizen:
+                    print("\nCitizen Details:")
+                    print(existing_citizen)  # Assuming Citizen has a __str__ method
                 else:
-                    print("No citizens found with that id.")
+                    print(f"Citizen with ID {citizen_id} not found.")
             except sqlite3.Error as e:
                 print(f"Error finding citizen: {e}")
+            except ValueError:
+                print("Invalid citizen ID (must be an integer).")
 
         elif choice == '5':
-                    break  # Exit the loop
+                    print("Goodbye!!!")
+                    break
 
         else:
             print("Invalid choice. Please enter a number between 1 and 5.")
 
 
-    # Close the connection (recommended to close it outside the loop)
+   
     CONN.close()
 
 

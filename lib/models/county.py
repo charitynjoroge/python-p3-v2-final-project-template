@@ -45,7 +45,7 @@ class County:
             CURSOR.close()
 
     
-    def delete_county(cls, county_id):
+    def delete_by_id(cls, county_id):
         """
         Deletes a county record from the database.
 
@@ -71,5 +71,5 @@ class County:
         CURSOR = CONN.cursor()
         CURSOR.execute('SELECT * FROM county WHERE name LIKE ?', (f'%{name}%',))
         counties = CURSOR.fetchall()
-        return [cls(*county) for county in counties]  # Create County objects from results
+        return [cls(*county) for county in counties]  
 

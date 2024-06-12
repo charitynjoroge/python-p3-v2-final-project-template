@@ -45,7 +45,6 @@ class Citizen:
             print(f"Error updating citizen: {e}")
             return False
         finally:
-        # Close the cursor even if an exception occurs
             CURSOR.close()
 
     
@@ -75,5 +74,47 @@ class Citizen:
         CURSOR = CONN.cursor()
         CURSOR.execute('SELECT * FROM citizen WHERE name LIKE ?', (f'%{name}%',))
         citizens = CURSOR.fetchall()
-        return [cls(*citizen) for citizen in citizens]  # Create Citizen objects from results
+        return [cls(*citizen) for citizen in citizens]  
 
+
+    def find_by_id(cls, citizen_id):
+        """
+        Finds a citizen record in the database by ID.
+
+        Args:
+            conn (sqlite3.Connection): The database connection object.
+            citizen_id (int): The ID of the citizen to search for.
+
+        Returns:
+            Citizen: The Citizen object matching the ID, or None if not found
+
+        """
+        CURSOR = CONN.cursor()
+        CURSOR.execute('SELECT * FROM citizen WHERE id = ?', (citizen_id,))
+        citizen_data = CURSOR.fetchone()
+        if citizen_data:
+            return cls(*citizen_data)  
+        else:
+            return None  # Return None if not found
+        
+    
+def find_by_county_id(county_id):
+    """
+    Finds citizen records in the database that belong to the specified county ID.
+
+    Args:
+        conn (sqlite3.Connection): The database connection object.
+        county_id (int): The ID of the county to search for citizens.
+
+    Returns:
+        list[tuple]: A list of tuples containing citizen data (assuming column order).
+    """
+
+    try:
+        CURSOR.execute('SELECT * FROM citizen WHERE county_id = ?', (county_id,))
+        citizens = CURSOR.fetchall()
+        return citizens
+    except sqlite3.Error as e:
+        print(f"Error finding citizens: {e}")
+        return []  # Return empty list on error
+    
