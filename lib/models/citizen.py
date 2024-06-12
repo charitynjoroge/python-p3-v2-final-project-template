@@ -81,20 +81,6 @@ class Citizen:
             return False
         
 
-
-    # @classmethod
-    # def find_by_id(cls, citizen_id):
-    #     """
-    #     Finds a citizen record in the database by ID.
-
-    #     """
-    #     CURSOR = CONN.cursor()
-    #     CURSOR.execute('SELECT * FROM citizen WHERE id = ?', (citizen_id,))
-    #     citizen_data = CURSOR.fetchone()
-    #     if citizen_data:
-    #         return cls(*citizen_data)  
-    #     else:
-    #         return None  # Return None if not found
         
     @classmethod
     def find_by_id(cls, citizen_id):
