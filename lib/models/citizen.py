@@ -20,6 +20,8 @@ class Citizen:
         self.county = county
 
 
+    
+
     @property  # Getter for email
     def email(self):
         return self._email
@@ -43,6 +45,10 @@ class Citizen:
         else:
             raise ValueError(f"Name must be at least {Citizen.MIN_NAME_LENGTH} digits long.")
 
+
+    @property
+    def get_county(self):
+        return self.county 
    
     @classmethod
     def add_to_citizen_table(self):
@@ -53,7 +59,7 @@ class Citizen:
         """
 
         insert_query = 'INSERT INTO citizen (name, email, county) VALUES (?, ?, ?)'
-        CURSOR.execute(insert_query)
+        CURSOR.execute(insert_query, (self.name, self.email, self.county))
 
         CONN.commit()
         CONN.close() 
@@ -76,6 +82,20 @@ class Citizen:
         
 
 
+    # @classmethod
+    # def find_by_id(cls, citizen_id):
+    #     """
+    #     Finds a citizen record in the database by ID.
+
+    #     """
+    #     CURSOR = CONN.cursor()
+    #     CURSOR.execute('SELECT * FROM citizen WHERE id = ?', (citizen_id,))
+    #     citizen_data = CURSOR.fetchone()
+    #     if citizen_data:
+    #         return cls(*citizen_data)  
+    #     else:
+    #         return None  # Return None if not found
+        
     @classmethod
     def find_by_id(cls, citizen_id):
         """
@@ -86,8 +106,10 @@ class Citizen:
         CURSOR.execute('SELECT * FROM citizen WHERE id = ?', (citizen_id,))
         citizen_data = CURSOR.fetchone()
         if citizen_data:
-            return cls(*citizen_data)  
+        # Assuming citizen_data is a tuple containing attributes
+            id, name, email, county = citizen_data
+            return cls(id, name, email, county)
         else:
-            return None  # Return None if not found
+            return None  # Return None
         
-    
+        

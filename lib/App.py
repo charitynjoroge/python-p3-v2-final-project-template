@@ -13,7 +13,7 @@ CURSOR = CONN.cursor()
 
 def main():
   
-    # Initialize the database table (assuming it's not done elsewhere)
+    # Initialize the database table 
     database_table()
 
     while True:
@@ -25,7 +25,7 @@ def main():
         print("5. Find Citizen by ID")
         print("6. Exit")
 
-        choice = input("Enter your choice (1-4): ")
+        choice = input("Enter your choice (1-6): ")
 
         if choice == '1':
             # Add citizen
@@ -118,6 +118,7 @@ def main():
                 print("Invalid county ID (must be an integer).")
 
 
+
         elif choice == '5':
             # Find citizen by ID
             citizen_id = int(input("Enter citizen's ID to find: "))
@@ -127,14 +128,18 @@ def main():
                 existing_citizen = Citizen.find_by_id(citizen_id)
 
                 if existing_citizen:
-                    print("\nCitizen Details: ")
-                    print(existing_citizen)  
+                    # tuple
+                    print("\nCitizen Details:") 
+                    print(f"Name: {existing_citizen.name}")
+                    print(f"Email: {existing_citizen.email}")
+                    print(f"County: {existing_citizen.get_county}")
+                    
                 else:
                     print(f"Citizen with ID {citizen_id} not found.")
             except sqlite3.Error as e:
                 print(f"Error finding citizen: {e}")
             except ValueError:
-                if not isinstance(citizen_id, int): 
+                if not isinstance(citizen_id, int):
                     print("Invalid citizen ID (must be an integer).")
 
         elif choice == '6':
