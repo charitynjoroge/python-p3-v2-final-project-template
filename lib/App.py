@@ -124,7 +124,7 @@ def main():
             citizen_id = int(input("Enter citizen's ID to find: "))
 
             try:
-                # Use Citizen.find_by_id (assuming implemented)
+                # Use Citizen.find_by_id 
                 existing_citizen = Citizen.find_by_id(citizen_id)
 
                 if existing_citizen:

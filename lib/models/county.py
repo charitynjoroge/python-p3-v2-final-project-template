@@ -24,7 +24,7 @@ class County:
         CURSOR.execute(insert_query)
 
         CONN.commit()
-        CONN.close() 
+        #CONN.close() 
 
 
     @classmethod
@@ -41,8 +41,7 @@ class County:
         except sqlite3.Error as e:
             print(f"Error updating county: {e}")
             return False
-        finally:
-            CURSOR.close()
+        
 
     @classmethod
     def delete_by_id(cls, county_id):
@@ -58,7 +57,6 @@ class County:
         except sqlite3.Error as e:
             print(f"Error deleting county: {e}")
             return False
-        finally:
-            CURSOR.close()
+        
 
 

@@ -92,7 +92,7 @@ class Citizen:
         CURSOR.execute('SELECT * FROM citizen WHERE id = ?', (citizen_id,))
         citizen_data = CURSOR.fetchone()
         if citizen_data:
-        # Assuming citizen_data is a tuple containing attributes
+        
             id, name, email, county = citizen_data
             return cls(id, name, email, county)
         else:
