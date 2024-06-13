@@ -23,9 +23,10 @@ def main():
         print("3. Delete Citizen")
         print("4. Delete County")
         print("5. Find Citizen by ID")
-        print("6. Exit")
+        print("6. List Citizens")
+        print("7. Exit")
 
-        choice = input("Enter your choice (1-6): ")
+        choice = input("Enter your choice (1-7): ")
 
         if choice == '1':
             # Add citizen
@@ -46,7 +47,7 @@ def main():
                 # Create county (if not already existing)
                 CURSOR.execute('INSERT INTO county (name) VALUES (?) ON CONFLICT DO NOTHING', (county_name,))
                 CONN.commit()
-                #county_id = CURSOR.execute('SELECT id FROM county WHERE name = ?', (county_name,)).fetchone()[0]
+                #
 
                 # Create citizen
                 CURSOR.execute('INSERT INTO citizen (name, email, county_name) VALUES (?, ?, ?)', (citizen_name, citizen_email, county_name))
@@ -65,9 +66,9 @@ def main():
                 existing_citizen = CURSOR.fetchone()
 
                 if existing_citizen:
-                    new_name = input("Enter new name (optional): ") or existing_citizen["name"]
-                    new_email = input("Enter new email (optional): ") or existing_citizen["email"]
-                    new_county = input("Enter new county (optional): ") or existing_citizen["county_name"]
+                    new_name = input("Enter new name (Required): ") or existing_citizen["name"]
+                    new_email = input("Enter new email(Required) : ") or existing_citizen["email"]
+                    new_county = input("Enter new county (Required): ") or existing_citizen["county_name"]
 
                     CURSOR.execute('UPDATE citizen SET name = ?, email = ?, county_name = ? WHERE id = ?', (new_name, new_email, new_county, citizen_id, ))
                     CONN.commit()
@@ -142,7 +143,30 @@ def main():
                 if not isinstance(citizen_id, int):
                     print("Invalid citizen ID (must be an integer).")
 
+
+
         elif choice == '6':
+            # List Citizens
+            print("\nList of Citizens:")
+            # Fetch all citizen data from the table
+            CURSOR.execute('SELECT * FROM citizen')
+            citizens = CURSOR.fetchall()  # all rows as a list of tuples
+
+            if citizens:
+                # Print header
+                print("ID\tName\t\tEmail\t\tCounty")
+                print("-" * 60)  # Max lengths for attributes are reasonable
+
+                # Loop through each citizen data (tuple) and print details
+                for citizen_data in citizens:
+                    citizen_id, name, email, county = citizen_data
+                    print(f"{citizen_id}\t{name:20}\t{email:25}\t{county}")  # Adjusted formatting
+            else:
+                print("No citizens found in the database.")
+
+
+        elif choice == '7':
+                    #Exit
                     print("Goodbye!!!")
                     break
 
