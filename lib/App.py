@@ -71,6 +71,22 @@ def main():
                     new_county = input("Enter new county (Required): ") or existing_citizen["county_name"]
 
                     CURSOR.execute('UPDATE citizen SET name = ?, email = ?, county_name = ? WHERE id = ?', (new_name, new_email, new_county, citizen_id, ))
+
+                    # Update county table (if county name has changed)
+                    if new_county != existing_citizen[3]:
+                        # Check if the new county already exists
+                        CURSOR.execute('SELECT id FROM county WHERE name = ?', (new_county,))
+                        new_county_id = CURSOR.fetchone()
+                    
+                            # Create new county
+                        CURSOR.execute('INSERT INTO county (name) VALUES (?)', (new_county,))
+                        CONN.commit()
+                            # Get the newly created county ID
+                        new_county_id = CURSOR.execute('SELECT last_insert_rowid()').fetchone()[0]
+                            # Update citizen's county_id to the new county
+                        CURSOR.execute('UPDATE citizen SET county_id = ? WHERE id = ?', (new_county_id, citizen_id,))
+
+
                     CONN.commit()
                     print("Citizen updated successfully!")
                 else:
